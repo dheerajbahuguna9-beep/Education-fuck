@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Education — Learning Platform</title>
+  
+  <!-- Clean Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="public/css/style.css">
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <header class="navbar">
+    <div class="nav-container">
+      <div class="logo" onclick="navigateTo('home')">
+        <span class="logo-icon">🎓</span>
+        <span class="logo-text">Smart<strong>Education</strong></span>
+      </div>
+
+      <nav class="nav-links">
+        <a href="#home" onclick="navigateTo('home')" class="nav-link active">Home</a>
+        <a href="#about" onclick="navigateTo('home', 'about-section')" class="nav-link">About Smart Ed</a>
+        <a href="#how-it-works" onclick="navigateTo('home', 'how-section')" class="nav-link">How it Works</a>
+        <a href="#ai-assistant" onclick="navigateTo('ai-section')" class="nav-link">AI Assistant</a>
+        <a href="#dashboard" id="navDashboardLink" onclick="navigateTo('dashboard')" class="nav-link hidden">My Dashboard</a>
+      </nav>
+
+      <div class="nav-actions">
+        <div id="loggedOutActions">
+          <button class="btn btn-outline" onclick="openAuthModal('login')">Login</button>
+          <button class="btn btn-primary" onclick="openAuthModal('register')">Register</button>
+        </div>
+        <div id="loggedInActions" class="user-badge-container hidden">
+          <span class="user-greeting">Hi, <strong id="navUserName">Student</strong> 👋</span>
+          <button class="btn btn-sm btn-outline" onclick="navigateTo('intake')">Change Topic</button>
+          <button class="btn btn-sm btn-danger" onclick="logoutUser()">Logout</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT CONTAINER -->
+  <main class="main-content">
+
+    <!-- PAGE 1: HOME SECTION -->
+    <section id="homePage" class="page-section active">
+      
+      <!-- Clean Hero Banner -->
+      <div class="hero-card">
+        <div class="hero-text-content">
+          <h1>Smart Education</h1>
+          <p class="hero-subtext">
+            Select your preferred subject and daily study schedule to generate a structured learning roadmap, timetable, and study resources.
+          </p>
+          <div class="hero-btn-group">
+            <button class="btn btn-primary btn-lg" onclick="handleGetStarted()">
+              Get Started
+            </button>
+            <button class="btn btn-secondary btn-lg" onclick="openAuthModal('login')">
+              Login / Register
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section: About Smart Education -->
+      <div id="about-section" class="info-section">
+        <div class="section-header">
+          <h2>Features</h2>
+          <p>Structured tools to organize your study plan.</p>
+        </div>
+
+        <div class="cards-grid grid-3">
+          <div class="feature-card">
+            <div class="feature-icon">🌐</div>
+            <h3>Structured Roadmaps</h3>
+            <p>Generates step-by-step phases for Tech, Science, Math, Business, Humanities, or any custom topic.</p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">📚</div>
+            <h3>Curated Resources</h3>
+            <p>Organized links to video tutorials and written reference guides for your selected topic.</p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">🧠</div>
+            <h3>AI Assistant</h3>
+            <p>Interactive study assistant to ask questions and review concepts logically.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section: How it Works -->
+      <div id="how-section" class="info-section alt-bg">
+        <div class="section-header">
+          <h2>How it Works</h2>
+          <p>3 steps to set up your study dashboard.</p>
+        </div>
+
+        <div class="steps-container">
+          <div class="step-box">
+            <div class="step-number">1</div>
+            <h3>Login / Register</h3>
+            <p>Create an account using your Gmail and password.</p>
+          </div>
+
+          <div class="step-connector">➔</div>
+
+          <div class="step-box">
+            <div class="step-number">2</div>
+            <h3>Select Topic & Time</h3>
+            <p>Choose your subject and preferred daily study time slot.</p>
+          </div>
+
+          <div class="step-connector">➔</div>
+
+          <div class="step-box">
+            <div class="step-number">3</div>
+            <h3>View Dashboard</h3>
+            <p>Access your roadmap, daily timetable, and resources.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PAGE 2: AUTHENTICATION / LOGIN & REGISTER PAGE -->
+    <section id="authPage" class="page-section">
+      <div class="auth-wrapper">
+        <div class="auth-card">
+          <!-- Auth Tabs -->
+          <div class="auth-tabs">
+            <button id="tabLoginBtn" class="auth-tab active" onclick="switchAuthTab('login')">Login</button>
+            <button id="tabRegisterBtn" class="auth-tab" onclick="switchAuthTab('register')">Register</button>
+          </div>
+
+          <!-- LOGIN FORM -->
+          <form id="loginForm" class="auth-form" onsubmit="handleLoginSubmit(event)">
+            <h2 class="auth-title">Account Login</h2>
+            <p class="auth-subtitle">Enter your Gmail and password to access your dashboard.</p>
+
+            <div class="form-group">
+              <label for="loginEmail">Gmail / Email Address</label>
+              <div class="input-container">
+                <span class="input-icon">✉</span>
+                <input type="email" id="loginEmail" placeholder="your.name@gmail.com" required autocomplete="email">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="loginPassword">Password</label>
+              <div class="input-container">
+                <span class="input-icon">🔒</span>
+                <input type="password" id="loginPassword" placeholder="Enter your password" required autocomplete="current-password">
+                <button type="button" class="btn-toggle-pw" onclick="togglePasswordVisibility('loginPassword', this)">👁</button>
+              </div>
+            </div>
+
+            <div class="form-row flex-between">
+              <label class="checkbox-label">
+                <input type="checkbox" id="rememberMe">
+                <span>Remember me</span>
+              </label>
+              <a href="#" class="hover-link" onclick="alert('Password reset link can be sent to your Gmail.')">Forgot password?</a>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block margin-top-md">
+              Login
+            </button>
+
+            <div id="loginMessage" class="status-msg"></div>
+          </form>
+
+          <!-- REGISTER FORM -->
+          <form id="registerForm" class="auth-form hidden" onsubmit="handleRegisterSubmit(event)">
+            <h2 class="auth-title">Create Account</h2>
+            <p class="auth-subtitle">Fill in your details to register.</p>
+
+            <div class="form-group">
+              <label for="regName">Full Name</label>
+              <div class="input-container">
+                <span class="input-icon">👤</span>
+                <input type="text" id="regName" placeholder="Full Name" required autocomplete="name">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="regEmail">Gmail / Email Address</label>
+              <div class="input-container">
+                <span class="input-icon">✉</span>
+                <input type="email" id="regEmail" placeholder="your.name@gmail.com" required autocomplete="email">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="regPassword">Password</label>
+              <div class="input-container">
+                <span class="input-icon">🔒</span>
+                <input type="password" id="regPassword" placeholder="Password" required autocomplete="new-password">
+                <button type="button" class="btn-toggle-pw" onclick="togglePasswordVisibility('regPassword', this)">👁</button>
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-success btn-block margin-top-md">
+              Register Account
+            </button>
+
+            <div id="registerMessage" class="status-msg"></div>
+          </form>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- PAGE 3: STUDENT INTAKE / PREFERENCES FORM -->
+    <section id="intakePage" class="page-section">
+      <div class="form-card">
+        <div class="form-header">
+          <h2>Select Study Preferences</h2>
+          <p>Choose your topic, current level, and daily study time.</p>
+        </div>
+
+        <form id="intakeForm" onsubmit="handleIntakeSubmit(event)">
+
+          <!-- Subject Selection -->
+          <div class="form-section">
+            <label class="section-label">1. Choose Subject / Topic:</label>
+            
+            <div class="options-grid">
+              <label class="option-card">
+                <input type="radio" name="subject" value="dsa" checked onchange="toggleCustomSubjectInput()">
+                <div class="option-content">
+                  <span class="option-icon">⚡</span>
+                  <div>
+                    <strong>Data Structures & Algorithms (DSA)</strong>
+                    <small>Arrays, Trees, Graphs & Coding</small>
+                  </div>
+                </div>
+              </label>
+
+              <label class="option-card">
+                <input type="radio" name="subject" value="math-stats" onchange="toggleCustomSubjectInput()">
+                <div class="option-content">
+                  <span class="option-icon">📐</span>
+                  <div>
+                    <strong>Mathematics & Calculus</strong>
+                    <small>Algebra, Calculus & Statistics</small>
+                  </div>
+                </div>
+              </label>
+
+              <label class="option-card">
+                <input type="radio" name="subject" value="physics" onchange="toggleCustomSubjectInput()">
+                <div class="option-content">
+                  <span class="option-icon">🔬</span>
+                  <div>
+                    <strong>Physics</strong>
+                    <small>Mechanics, Energy & Waves</small>
+                  </div>
+                </div>
+              </label>
+
+              <label class="option-card">
+                <input type="radio" name="subject" value="business-finance" onchange="toggleCustomSubjectInput()">
+                <div class="option-content">
+                  <span class="option-icon">📈</span>
+                  <div>
+                    <strong>Business & Finance</strong>
+                    <small>Economics, Accounting & Growth</small>
+                  </div>
+                </div>
+              </label>
+
+              <label class="option-card">
+                <input type="radio" name="subject" value="psychology" onchange="toggleCustomSubjectInput()">
+                <div class="option-content">
+                  <span class="option-icon">🧠</span>
+                  <div>
+                    <strong>Psychology</strong>
+                    <small>Cognitive Science & Memory</small>
+                  </div>
+                </div>
+              </label>
+
+              <label class="option-card">
+                <input type="radio" name="subject" value="custom" onchange="toggleCustomSubjectInput()">
+                <div class="option-content">
+                  <span class="option-icon">🌍</span>
+                  <div>
+                    <strong>Custom Topic</strong>
+                    <small>Type any topic name</small>
+                  </div>
+                </div>
+              </label>
+            </div>
+
+            <!-- Custom Topic Text Field -->
+            <div id="customSubjectGroup" class="form-group hidden margin-top-sm">
+              <label for="customSubjectInput">Type Specific Topic Name:</label>
+              <input type="text" id="customSubjectInput" placeholder="e.g. World History, Chemistry, Web Development...">
+            </div>
+          </div>
+
+          <!-- Level Selection -->
+          <div class="form-section margin-top-md">
+            <label class="section-label">2. Knowledge Level:</label>
+            <div class="radio-row">
+              <label class="radio-pill">
+                <input type="radio" name="studyLevel" value="beginner" checked>
+                <span>Beginner</span>
+              </label>
+              <label class="radio-pill">
+                <input type="radio" name="studyLevel" value="intermediate">
+                <span>Intermediate</span>
+              </label>
+              <label class="radio-pill">
+                <input type="radio" name="studyLevel" value="advanced">
+                <span>Advanced</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Study Time Preference -->
+          <div class="form-section margin-top-md">
+            <label class="section-label">3. Preferred Study Time:</label>
+            <div class="time-grid">
+              <label class="time-card">
+                <input type="radio" name="studyTime" value="early-morning" checked>
+                <div class="time-card-content">
+                  <span class="time-icon">🌅</span>
+                  <strong>Early Morning</strong>
+                  <small>6:00 AM – 8:00 AM</small>
+                </div>
+              </label>
+
+              <label class="time-card">
+                <input type="radio" name="studyTime" value="morning">
+                <div class="time-card-content">
+                  <span class="time-icon">☀️</span>
+                  <strong>Morning Slot</strong>
+                  <small>9:00 AM – 12:00 PM</small>
+                </div>
+              </label>
+
+              <label class="time-card">
+                <input type="radio" name="studyTime" value="afternoon">
+                <div class="time-card-content">
+                  <span class="time-icon">🌤️</span>
+                  <strong>Afternoon Slot</strong>
+                  <small>2:00 PM – 5:00 PM</small>
+                </div>
+              </label>
+
+              <label class="time-card">
+                <input type="radio" name="studyTime" value="evening">
+                <div class="time-card-content">
+                  <span class="time-icon">🌆</span>
+                  <strong>Evening Slot</strong>
+                  <small>6:00 PM – 9:00 PM</small>
+                </div>
+              </label>
+
+              <label class="time-card">
+                <input type="radio" name="studyTime" value="night">
+                <div class="time-card-content">
+                  <span class="time-icon">🌙</span>
+                  <strong>Late Night Slot</strong>
+                  <small>10:00 PM – 1:00 AM</small>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <!-- Hours Per Day -->
+          <div class="form-section margin-top-md">
+            <label class="section-label">4. Daily Study Duration:</label>
+            <select id="hoursPerDay" class="custom-select">
+              <option value="1">1 Hour per day</option>
+              <option value="2" selected>2 Hours per day</option>
+              <option value="3">3 Hours per day</option>
+              <option value="4">4+ Hours per day</option>
+            </select>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-lg btn-block margin-top-lg">
+            Generate Plan & Timetable
+          </button>
+          
+          <div id="intakeMessage" class="status-msg"></div>
+        </form>
+      </div>
+    </section>
+
+    <!-- PAGE 4: STUDENT DASHBOARD -->
+    <section id="dashboardPage" class="page-section">
+      
+      <!-- Dashboard Top Banner -->
+      <div class="dashboard-header-card">
+        <div class="dash-user-info">
+          <h2>Student Dashboard</h2>
+          <p>Subject: <span id="dashSubjectTitle" class="badge-subject">Data Structures & Algorithms</span> | Daily Slot: <span id="dashTimeSlotTitle" class="badge-time">Evening (6 PM - 8 PM)</span></p>
+        </div>
+        <button class="btn btn-sm btn-outline-white" onclick="navigateTo('intake')">Edit Preferences</button>
+      </div>
+
+      <!-- Dashboard Navigation Tabs -->
+      <div class="dashboard-tabs">
+        <button id="dashTabOverview" class="dash-tab active" onclick="switchDashTab('overview')">Basic Knowledge</button>
+        <button id="dashTabRoadmap" class="dash-tab" onclick="switchDashTab('roadmap')">Custom Roadmap</button>
+        <button id="dashTabResources" class="dash-tab" onclick="switchDashTab('resources')">Internet Resources</button>
+        <button id="dashTabTimetable" class="dash-tab" onclick="switchDashTab('timetable')">Daily Timetable</button>
+      </div>
+
+      <!-- TAB 1: BASIC KNOWLEDGE & TOPIC OVERVIEW -->
+      <div id="dashPaneOverview" class="dash-pane active">
+        <div class="content-card">
+          <h3 class="card-heading">About <span id="overviewTopicName">Topic</span></h3>
+          <p id="overviewTopicSummary" class="text-lead">
+            Loading topic summary...
+          </p>
+
+          <h4 class="sub-heading">Key Concepts:</h4>
+          <ul id="overviewKeyConcepts" class="styled-list">
+            <!-- Populated via JS -->
+          </ul>
+
+          <h4 class="sub-heading">Example Preview:</h4>
+          <pre class="code-box"><code id="overviewCodeBox">// Example preview...</code></pre>
+        </div>
+      </div>
+
+      <!-- TAB 2: STEP-BY-STEP ROADMAP -->
+      <div id="dashPaneRoadmap" class="dash-pane">
+        <div class="content-card">
+          <div class="flex-between align-center margin-bottom-md">
+            <div>
+              <h3 class="card-heading">Learning Roadmap</h3>
+              <p class="text-sub">Follow this step-by-step plan.</p>
+            </div>
+            <div class="progress-container">
+              <span class="progress-text">Progress: <strong id="progressPercent">0%</strong></span>
+              <div class="progress-bar-bg">
+                <div id="progressBarFill" class="progress-bar-fill" style="width: 0%;"></div>
+              </div>
+            </div>
+          </div>
+
+          <div id="roadmapPhasesList" class="roadmap-timeline">
+            <!-- Populated via JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 3: BEST INTERNET RESOURCES -->
+      <div id="dashPaneResources" class="dash-pane">
+        
+        <!-- Video Resources -->
+        <div class="content-card margin-bottom-lg">
+          <h3 class="card-heading">YouTube Video Courses</h3>
+          <p class="text-sub">Video lectures for your topic.</p>
+          
+          <div id="youtubeGrid" class="cards-grid grid-2 margin-top-md">
+            <!-- Populated via JS -->
+          </div>
+        </div>
+
+        <!-- Written Notes & Docs -->
+        <div class="content-card">
+          <h3 class="card-heading">Web Notes & References</h3>
+          <p class="text-sub">Direct links to documentation and reference guides.</p>
+          
+          <div id="notesList" class="notes-grid margin-top-md">
+            <!-- Populated via JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 4: CUSTOM DAILY TIMETABLE -->
+      <div id="dashPaneTimetable" class="dash-pane">
+        <div class="content-card">
+          <div class="flex-between align-center margin-bottom-md">
+            <div>
+              <h3 class="card-heading">Daily Study Timetable</h3>
+              <p class="text-sub">Time allocation for theory, practice, and review.</p>
+            </div>
+            <span id="timetableWindowBadge" class="badge-time-large">Evening (6:00 PM to 8:00 PM)</span>
+          </div>
+
+          <div id="timetableSlots" class="timetable-timeline margin-top-md">
+            <!-- Populated via JS -->
+          </div>
+
+          <div class="tips-box margin-top-lg">
+            <h4>Time Management Guidelines:</h4>
+            <ul id="timetableTipsList" class="styled-list">
+              <!-- Populated via JS -->
+            </ul>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- PAGE 5: AI ASSISTANT SECTION -->
+    <section id="aiPage" class="page-section">
+      <div class="ai-chat-card">
+        <div class="ai-header">
+          <div class="ai-avatar">🤖</div>
+          <div class="flex-1">
+            <h3>AI Study Assistant</h3>
+            <p>Ask questions about your study topic or concepts.</p>
+          </div>
+          <button class="btn btn-sm btn-outline-white" onclick="resetChatHistory()">New Chat</button>
+          <button class="btn btn-sm btn-outline-white margin-left-xs" onclick="toggleApiKeyInput()">Gemini Key (Optional)</button>
+        </div>
+
+        <!-- Optional Gemini API Key Drawer -->
+        <div id="apiKeyDrawer" class="api-key-drawer hidden">
+          <label for="userApiKey">Google Gemini API Key (Optional):</label>
+          <div class="flex-gap-sm margin-top-xs">
+            <input type="password" id="userApiKey" placeholder="Paste API key here">
+            <button type="button" class="btn btn-sm btn-primary" onclick="saveUserApiKey()">Save Key</button>
+          </div>
+          <small class="text-muted">Optional: Enter a Gemini API Key for live AI generation, or use built-in engine.</small>
+        </div>
+
+        <!-- Quick Prompts -->
+        <div class="quick-prompts-bar">
+          <button type="button" class="quick-pill" onclick="sendQuickPrompt('Explain this concept step by step')">Step-by-Step Explanation</button>
+          <button type="button" class="quick-pill" onclick="sendQuickPrompt('Give code or example')">Example Code / Formula</button>
+          <button type="button" class="quick-pill" onclick="sendQuickPrompt('Explain simply with analogy')">Simple Analogy</button>
+          <button type="button" class="quick-pill" onclick="sendQuickPrompt('Give me 5 practice questions')">5 Practice Questions</button>
+        </div>
+
+        <div id="chatMessages" class="chat-messages-container">
+          <div class="chat-message bot">
+            <div class="msg-avatar">🤖</div>
+            <div class="msg-content">
+              Hello! I am your <strong>AI Study Assistant</strong>. Ask me any question about your topic and I will explain it logically.
+            </div>
+          </div>
+        </div>
+
+        <form class="chat-input-form" onsubmit="handleAiQuery(event)">
+          <input type="text" id="aiInputQuery" placeholder="Ask a question..." required>
+          <button type="submit" class="btn btn-primary">Send</button>
+        </form>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-content">
+      <p>© 2026 Smart Education Platform.</p>
+    </div>
+  </footer>
+
+  <!-- Script -->
+  <script src="js/app.js"></script>
+</body>
+</html>
